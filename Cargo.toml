@@ -1,0 +1,10 @@
+[package]
+name = "selfie_records_sdk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+regex = "1"
+simple_logger = "1"
+trust-dns-resolver = "0.20"
+log = "0.4"
