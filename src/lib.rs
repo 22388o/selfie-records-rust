@@ -9,12 +9,12 @@ use trust_dns_resolver::{Resolver, config::*};
 const DEFAULT_RECORDS: [&str; 4] = ["bitcoin-payment", "pgp", "nostr", "node-uri"];
 
 #[derive(Debug)]
-struct SelfieRecordsSDK {
+pub struct SelfieRecordsSDK {
     resolver: Resolver,
 }
 
 impl SelfieRecordsSDK {
-    fn new(debug: bool) -> Self {
+    pub fn new(debug: bool) -> Self {
         if debug {
             SimpleLogger::new().with_level(LevelFilter::Debug).init().unwrap();
         } else {
@@ -25,13 +25,12 @@ impl SelfieRecordsSDK {
         SelfieRecordsSDK { resolver }
     }
 
-    fn get_records(&self, name: &str, filters: Option<Vec<&str>>, dns_server: Option<&str>) -> HashMap<String, HashMap<String, Option<String>>> {
+    pub fn get_records(&self, name: &str, filters: Option<Vec<&str>>, dns_server: Option<&str>) -> HashMap<String, HashMap<String, Option<String>>> {
         let filters = filters.unwrap_or(DEFAULT_RECORDS.to_vec());
         let dns_server = dns_server.unwrap_or("8.8.8.8");
 
         let mut results = HashMap::new();
 
-        // Update DNS server if provided
         if let Ok(ip) = Ipv4Addr::from_str(dns_server) {
             self.resolver.update_nameservers(&ResolverConfig::from_parts(None, vec![NameServerConfig {
                 socket_addr: (ip, 53).into(),
@@ -122,10 +121,4 @@ impl SelfieRecordsSDK {
         error_map.insert("error".to_string(), Some(error.to_string()));
         error_map
     }
-}
-
-fn main() {
-    let sdk = SelfieRecordsSDK::new(true);
-    let records = sdk.get_records("example.com", None, Some("8.8.8.8"));
-    println!("{:?}", records);
 }
