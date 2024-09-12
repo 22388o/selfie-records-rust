@@ -1,2 +1,3 @@
-# self-records-rust
+# Selfie Records Rust SDK
+
 Example of Self records in Rust
